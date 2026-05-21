@@ -14,7 +14,7 @@ interface FilmCardProps {
     rating,
     watched,
     onToggleWatched}:FilmCardProps){
-    const isRatingValid = rating >=1 && rating>=10;
+    const isRatingValid = rating >=1 && rating<=10;
 
 
     return(

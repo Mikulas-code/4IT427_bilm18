@@ -1,43 +1,36 @@
-import { useState } from 'react'
-import FilmCard from './components/FilmCard'
+import { useState } from 'react';
+import FilmCard from './components/FilmCard';
+import type { Film } from './types';
+import { useWatchList } from './hooks/useWatchList';
 
+
+const initialFilms = [
+  { title: "Inception", year: 2010, genre: "Sci-fi", rating: 9, watched: true },
+  { title: "Interstellar", year: 2014, genre: "Sci-fi", rating: 10, watched: false },
+  { title: "The Dark Knight", year: 2008, genre: "Akční", rating: 9, watched: true },
+];
 
 function App() {
 
-  const [filmy, setFilmy] = useState([
-    { title: 'Sam doma', year: 1999, genre: 'Neco', rating: 4.2, watched: true },
-    { title: 'Sam doma 2', year: 2003, genre: 'Neco', rating: 8, watched: true },
-    { title: 'Sam doma 3', year: 2005, genre: 'Neco', rating: 9, watched: true },
-  ]);
-
-
-  const handleToggleWatched = (title: string) => {
-    setFilmy(predchoziFilmy =>
-      predchoziFilmy.map(film =>
-        film.title === title 
-          ? { ...film, watched: !film.watched }
-          : film
-      )
-    );
-  };
-
+  const { films, handleToggleWatched, handleMarkAllWatched } = useWatchList(initialFilms);
 
   return (
-    <>
-      {filmy.map(film => (
-        <FilmCard 
+    <main>
+      <h1>Film Watchlist - Zhlédnuto: {films.filter((film) => film.watched).length}</h1>
+      {films.map((film) => (
+        <FilmCard
           key={film.title}
-          title={film.title} 
-          year={film.year} 
-          genre={film.genre} 
-          rating={film.rating} 
-          watched={film.watched} 
+          title={film.title}
+          year={film.year}
+          genre={film.genre}
+          rating={film.rating}
+          watched={film.watched}
           onToggleWatched={handleToggleWatched}
         />
       ))}
-    </>
+      <button onClick={handleMarkAllWatched}>Označit vše jako zhlédnuté</button>
+    </main>
   );
 }
 
-
-export default App
+export default App;
