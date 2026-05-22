@@ -5,6 +5,8 @@ import { useEffect } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
 
+import { fetchFilms } from '@/api/films';
+
 interface WatchlistContextType {
   films: Film[];
   isLoading: boolean;
@@ -26,24 +28,24 @@ export const WatchlistContext = createContext<WatchlistContextType>({
 });
 
 export function WatchlistProvider({ children }: { children: ReactNode }) {
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ['films'],
-    queryFn: () => fetch('/films.json').then((r) => r.json() as Promise<Film[]>),
-  });
+  const { data: serverFilms, isLoading, isError } = useQuery({
+  queryKey: ['films'],
+  queryFn: fetchFilms,
+});
 
-  const [films, setFilms] = useState<Film[]>([]);
+  const [clientFilms, setClientFilms] = useState<Film[]>([]);
 
   const addFilm = (newFilm: Film) => {
-    setFilms([...films, newFilm]);
+    setClientFilms([...clientFilms, newFilm]);
   };
 
   const removeFilm = (id: string) => {
-    setFilms(films.filter((film) => film.id !== id));
+    setClientFilms(clientFilms.filter((film) => film.id !== id));
   };
 
   const toggleWatched = (id: string) => {
-    setFilms(
-      films.map((film) => {
+    setClientFilms(
+      clientFilms.map((film) => {
         if (film.id === id) {
           return { ...film, watched: !film.watched };
         } else return film;
@@ -52,22 +54,20 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
   };
 
   const markAllAsWatched = () => {
-    setFilms(
-      films.map((film) => {
+    setClientFilms(
+      clientFilms.map((film) => {
         return { ...film, watched: true };
       })
     );
   };
 
   useEffect(() => {
-    if (data) {
-      setFilms(data);
-    }
-  }, [data]);
+  if (serverFilms) setClientFilms(serverFilms);
+}, [serverFilms]);
 
   return (
     <WatchlistContext.Provider
-      value={{ films, isLoading, isError, addFilm, removeFilm, toggleWatched, markAllAsWatched }}
+      value={{ films: clientFilms, isLoading, isError, addFilm, removeFilm, toggleWatched, markAllAsWatched }}
     >
       {children}
     </WatchlistContext.Provider>
