@@ -1,6 +1,7 @@
 import { type Film } from '@/types/Film';
 import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
+import { useEffect } from 'react';
 
 interface WatchlistContextType {
   films: Film[];
@@ -33,30 +34,39 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
     setFilms(films.filter((film) => film.id !== id));
   };
 
-  const toggleWatched = (id: string)=>{
-    setFilms(films.map((film) =>{
-      if(film.id === id){
-        return { ...film, watched: !film.watched }
-      }
-      else return film;
-    }))
-  }
+  const toggleWatched = (id: string) => {
+    setFilms(
+      films.map((film) => {
+        if (film.id === id) {
+          return { ...film, watched: !film.watched };
+        } else return film;
+      })
+    );
+  };
 
-  const markAllAsWatched = ()=>{
-    setFilms(films.map((film)=>{
-      return { ...film, watched: true}
-    }))
-  }
+  const markAllAsWatched = () => {
+    setFilms(
+      films.map((film) => {
+        return { ...film, watched: true };
+      })
+    );
+  };
+
+  useEffect(() => {
+    const watched = films.filter((film) => film.watched).length;
+    const total = films.length;
+    document.title = `Watchlist (${watched} / ${total} zhlédnuto)`;
+  }, [films]);
 
   return (
-    <WatchlistContext.Provider value={{films, addFilm, removeFilm, toggleWatched, markAllAsWatched}}>
+    <WatchlistContext.Provider
+      value={{ films, addFilm, removeFilm, toggleWatched, markAllAsWatched }}
+    >
       {children}
     </WatchlistContext.Provider>
-  )
+  );
 }
 
-export function useWatchList(){
-    return useContext(WatchlistContext);
+export function useWatchList() {
+  return useContext(WatchlistContext);
 }
-
-
