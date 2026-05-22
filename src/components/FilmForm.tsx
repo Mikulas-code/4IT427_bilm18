@@ -12,7 +12,7 @@ export function FilmForm({ onAddFilm }: FilmFormProps) {
   const [rating, setRating] = useState('');
 
   function handleSubmit() {
-    const newId = crypto.randomUUID();
+    const newId = Date.now().toString();
     onAddFilm({ id: newId, title, year: Number(year), genre, rating: Number(rating), watched: false });
 
     setTitle('');

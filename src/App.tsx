@@ -9,7 +9,7 @@ function App() {
     <>
       <nav className="flex gap-4 p-4 border-b dark:border-gray-700">
         <NavLink 
-          to="/" 
+          to="/" end
           className={({ isActive }) => isActive ? "font-bold text-blue-500" : "text-gray-600 dark:text-gray-400"}
         >
           Můj watchlist
@@ -31,7 +31,7 @@ function App() {
       <Routes>
         <Route path="/" element={<WatchlistPage />} />
         <Route path="/form" element={<AddFilmPage />} />
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );
