@@ -1,47 +1,39 @@
-import { useState } from 'react';
-import FilmCard from './components/FilmCard';
-import type { Film } from './types/Film';
 import { ThemeButton } from './components/ThemeButton';
-import { Komponenta } from './components/Komponenta';
-import { useWatchList } from './context/WatchListContext';
-import { FilmForm } from './components/FilmForm';
+import { Routes, Route, Navigate, NavLink, Outlet } from 'react-router-dom';
+import { WatchlistPage } from './pages/WatchlistPage';
+import { AddFilmPage } from './pages/AddFilmPage';
+
 
 function App() {
-  const { films, addFilm, removeFilm, toggleWatched, markAllAsWatched } = useWatchList();
-
   return (
-    <main className="min-h-screen max-w-4xl mx-auto p-8">
-      <div className="absolute top-4 right-4">
-        <ThemeButton />
-      </div>
-
-      <h1 className="text-3xl font-bold mb-6 text-black dark:text-white">
-        Film Watchlist - Zhlédnuto: {films.filter((film) => film.watched).length}
-      </h1>
-
-      <FilmForm onAddFilm={addFilm}></FilmForm>
-      {films.map((film) => (
-        <FilmCard
-          key={film.id}
-          id={film.id}
-          title={film.title}
-          year={film.year}
-          genre={film.genre}
-          rating={film.rating}
-          watched={film.watched}
-          onToggleWatched={toggleWatched}
-          onRemove={removeFilm}
-        />
-      ))}
-      <div className="flex justify-end mt-4">
-        <button
-          onClick={markAllAsWatched}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+    <>
+      <nav className="flex gap-4 p-4 border-b dark:border-gray-700">
+        <NavLink 
+          to="/" 
+          className={({ isActive }) => isActive ? "font-bold text-blue-500" : "text-gray-600 dark:text-gray-400"}
         >
-          Označit vše jako zhlédnuté
-        </button>
-      </div>
-    </main>
+          Můj watchlist
+        </NavLink>
+        <NavLink 
+          to="/form"
+          className={({ isActive }) => isActive ? "font-bold text-blue-500" : "text-gray-600 dark:text-gray-400"}
+        >
+          Přidat film
+        </NavLink>
+        <div className="ml-auto">
+          <ThemeButton />
+        </div>
+      </nav>
+
+      <Outlet />
+
+
+      <Routes>
+        <Route path="/" element={<WatchlistPage />} />
+        <Route path="/form" element={<AddFilmPage />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </>
   );
 }
 

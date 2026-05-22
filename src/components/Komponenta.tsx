@@ -3,6 +3,6 @@ import { useContext } from "react";
 
 export function Komponenta(){
 
-    const { theme, toggle } = useContext(ThemeContext);
+    const { theme} = useContext(ThemeContext);
     return <p>{theme}</p>
 }
